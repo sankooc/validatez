@@ -2,12 +2,16 @@
   "name": "validatez",
   "version": "1.0.0",
   "description": "object validation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sankooc/validatez.git"
+  },
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
-    "validation"
+    "validation, data"
   ],
   "author": "sankooc",
   "license": "MIT",

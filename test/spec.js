@@ -130,3 +130,36 @@ describe('field test', () => {
     should(validator.bind(validator, data)).not.throw();
   });
 });
+
+
+describe('refer test', () => {
+  it('story', () => {
+    let schema = {
+      prod: {
+        type: '&serial'
+      },
+      akk: {
+        type: '&age'
+      },
+      serial: {
+        type: '&age'
+      },
+      age: {
+        type: Number
+      },
+      name: {
+        type: String
+      }
+    };
+    should(_validator.create.bind(_validator, schema)).not.throw();
+    schema = {
+      age: {
+        type: Number
+      },
+      name: {
+        type: '&cd'
+      }
+    }
+    should(_validator.create.bind(_validator, schema)).throw('schema error in[name]');
+  });
+});
