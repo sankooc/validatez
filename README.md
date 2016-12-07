@@ -93,7 +93,7 @@ validator(data); // pass
 
  all buildin types [HERE](doc/types.md)
 
- if you need more buildin types, create [ISSUE](issues)
+ if you need more buildin types, create [ISSUE](issues/new)
 
  also you can define or override buildin type
 
