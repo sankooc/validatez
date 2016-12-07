@@ -67,6 +67,55 @@ validator(data); // pass
 
 ```
 
+## buildin types
+
+all buildin type start with `@`
+
+```
+
+const schema = {
+  email: {
+    type: '@email',
+  },
+};
+const validator = validate.create(schema);
+
+let data = {
+  email: 'sankooc@scd.com',
+}
+validator(data); // pass
+
+```
+
+ all buildin types [HERE](doc/types.md)
+
+ if you need more buildin types, create [ISSUE](issues)
+
+ also you can define buildin types
+
+ ```
+ validate.register({
+   code: {
+     type: String,
+     pattern: /^\d{16}$/,
+   }
+ })
+
+ const schema = {
+   zcode: {
+     type: '@code'
+   },
+ };
+ validator = validate.create(schema);
+
+ data = {
+   zcode: '1234123412341234',
+ };
+
+ validator(data); //pass
+
+ ```
+
 ## simple inject for control flow
 
 ### if your code managed by `Promise` your code will be like below
@@ -167,7 +216,7 @@ validator(data); // pass
 
 ## valiate option
 
-| key     |type    |default value | desc             | 
+| key     |type    |default value | desc             |
 |---------|--------|--------|------------------------|
 |errorType|function| Error  | Error/Promise/Function |
 |field    |string  |`strict`| snake/camel/kebab      |

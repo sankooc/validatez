@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const _types = require('./types');
 
 const DEFAUT_META = {
   errorType: Error,
@@ -59,6 +60,14 @@ const _toArray = function(schema){
   const arr = keys.map((field) => {
     const type = schema[field].type;
     const __ref = (typeof type === 'string' && type.charAt(0) === '&');
+    if(typeof type === 'string' && type.charAt(0) === '@'){
+      const f = type.substring(1);
+      const _type = _types[f];
+      if(!_type){
+        throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
+      }
+      schema[field] = _.extend({}, _type ,_.omit(schema[field],'type'));
+    }
     return {field, sc: schema[field], __ref}
   });
   return _tp(arr);
@@ -183,3 +192,7 @@ exports.create = function _create(schema, _option) {
   }
   return fn;
 };
+
+exports.register = function _register(schema){
+  _.extend(_types, schema);
+}

@@ -131,7 +131,6 @@ describe('field test', () => {
   });
 });
 
-
 describe('refer test', () => {
   it('story', () => {
     let schema = {
@@ -161,5 +160,54 @@ describe('refer test', () => {
       }
     }
     should(_validator.create.bind(_validator, schema)).throw('schema error in[name]');
+  });
+});
+
+describe('buildin type test', () => {
+  it('story', () => {
+    let schema = {
+      email: {
+        type: '@nothas'
+      },
+    };
+    should(_validator.create.bind(_validator, schema)).throw('NO SUCH BUILDIN TYPE [@nothas]');
+    schema = {
+      email: {
+        type: '@email'
+      },
+    };
+    should(_validator.create.bind(_validator, schema)).not.throw();
+    let validator = _validator.create(schema);
+    let data;
+    data = {
+      email: 'aka@gmail.com',
+    };
+    should(validator.bind(validator, data)).not.throw();
+
+    data = {
+      email: 'akmail.com',
+    };
+    should(validator.bind(validator, data)).throw('invalid email pattern');
+
+    _validator.register({
+      code: {
+        type: String,
+        pattern: /^\d{16}$/,
+      }
+    })
+    schema = {
+      zcode: {
+        type: '@code'
+      },
+    };
+    validator = _validator.create(schema);
+    data = {
+      zcode: '1234123412341234',
+    };
+    should(validator.bind(validator, data)).not.throw();
+    data = {
+      zcode: '12341234123413214213214',
+    };
+    should(validator.bind(validator, data)).throw('error param');
   });
 });
