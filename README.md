@@ -8,6 +8,10 @@
 
 simple way to validate object
 
+## install
+
+`$ npm install validatez`
+
 ## base usage
 
 ```
@@ -91,7 +95,7 @@ validator(data); // pass
 
  if you need more buildin types, create [ISSUE](issues)
 
- also you can define buildin types
+ also you can define or override buildin type
 
  ```
  validate.register({
@@ -208,7 +212,7 @@ validator(data); // pass
 |-----------|---------------|-------------|------------------------------|
 | type      |string/function|String       |                              |
 | allowNil  |boolean        |false        |                              |
-| errMessage|string/function|`param error`| error message                |
+| errMessage|string/function|`error param`| error message                |
 | range     |array          |             | enable when type is `Number` |
 | pattern   |regex          |             | enable when type is `String` |
 

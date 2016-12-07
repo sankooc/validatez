@@ -1,7 +1,7 @@
 const should = require('should');
 const _validator = require('../index');
 
-describe('content test', () => {
+describe('test', () => {
   let validator;
   before(() => {
     const schema = {

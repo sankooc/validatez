@@ -66,7 +66,7 @@ module.exports = {
   cn_char: {
     type: String,
     pattern: /^[\u4e00-\u9fa5]+$/,
-    desc: 'chinese charecter',
+    desc: 'chinese character',
   },
   mobile_cn: {
     type: String,
