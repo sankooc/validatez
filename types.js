@@ -16,7 +16,8 @@ module.exports = {
   },
   pwd:{
     type: String,
-    pattern: /^[a-zA-Z]\w{5,}$/,
+    pattern: /^[a-zA-Z0-9]{5,}$/,
+    errMessage: 'AT_LEAST_5_CHAR',
     desc: 'common password',
   },
   spwd: {
