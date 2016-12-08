@@ -93,7 +93,7 @@ validator(data); // pass
 
  all buildin types [HERE](doc/types.md)
 
- if you need more buildin types, create [ISSUE](/sankooc/validatez/issues/new)
+ if you need more buildin types, create [ISSUE](https://github.com/sankooc/validatez/issues/new)
 
  also you can define or override buildin type
 
@@ -119,6 +119,27 @@ validator(data); // pass
  validator(data); //pass
 
  ```
+
+## simple define
+
+```
+
+const schema = {
+  email: '@email',
+  name: String,
+};
+const validator = validate.create(schema);
+
+let data = {
+  email: 'sankooc@scd.com',
+  name: 'sankooc',
+}
+validator(data); // pass
+
+
+```
+
+
 
 ## simple inject for control flow
 

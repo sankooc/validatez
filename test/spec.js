@@ -208,6 +208,34 @@ describe('buildin type test', () => {
     data = {
       zcode: '12341234123413214213214',
     };
-    should(validator.bind(validator, data)).throw('error param');
+    should(validator.bind(validator, data)).throw('PARAM_ERROR');
+  });
+});
+
+
+describe('simple type test', () => {
+  it('story', () => {
+    let schema = {
+      email: '@email',
+      name: String,
+      num: Number,
+    };
+    let validator = _validator.create(schema);
+
+    let data = {
+      email: 'ccc',
+      name: 'kk',
+      num: 123,
+    };
+    should(validator.bind(validator, data)).throw('invalid email pattern');
+
+    data = {
+      email: 'sankooc@163.com',
+      name: 'kk',
+      num: 123,
+    };
+    should(validator.bind(validator, data)).not.throw();
+
+
   });
 });

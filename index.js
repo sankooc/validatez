@@ -9,7 +9,7 @@ const DEFAUT_META = {
 const DEFAULT_SCHEMA = {
   type: String,
   allowNil: false,
-  errMessage: 'error param',
+  errMessage: 'PARAM_ERROR',
 };
 
 const wrapKey = function wrapKey(type, key) {
@@ -58,17 +58,37 @@ const _tp = function(arr){
 const _toArray = function(schema){
   const keys = Object.keys(schema);
   const arr = keys.map((field) => {
-    const type = schema[field].type;
-    const __ref = (typeof type === 'string' && type.charAt(0) === '&');
-    if(typeof type === 'string' && type.charAt(0) === '@'){
-      const f = type.substring(1);
-      const _type = _types[f];
-      if(!_type){
-        throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
+    let _schema = schema[field];
+    if (typeof _schema === 'object') {
+      const type = _schema.type;
+      const __ref = (typeof type === 'string' && type.charAt(0) === '&');
+      if(typeof type === 'string' && type.charAt(0) === '@'){
+        const f = type.substring(1);
+        const _type = _types[f];
+        if(!_type){
+          throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
+        }
+        _schema = _.extend({}, _type ,_.omit(schema[field],'type'));
       }
-      schema[field] = _.extend({}, _type ,_.omit(schema[field],'type'));
+      return {field, sc: _schema, __ref}
+    } else if (typeof _schema === 'function') {
+      _schema = {
+        type: _schema
+      }
+      return { field, sc: _schema }
+    } else if(typeof _schema === 'string'){
+      if(_schema.charAt(0) === '@'){
+        const f = _schema.substring(1);
+        const _type = _types[f];
+        if(!_type){
+          throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
+        }
+        _schema = _.extend({}, _type);
+        return {field, sc: _schema}
+      }
     }
-    return {field, sc: schema[field], __ref}
+    console.dir(_schema);
+    throw new Error('SCHEMA_ERROR');
   });
   return _tp(arr);
 }
