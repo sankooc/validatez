@@ -16,14 +16,14 @@ module.exports = {
   },
   pwd:{
     type: String,
-    pattern: /^[a-zA-Z0-9]{5,}$/,
-    errMessage: 'AT_LEAST_5_CHAR',
+    pattern: /^[\x21-\x7e]{5,}$/,
+    errMessage: 'AT_LEAST_5_CHAR_WITH_NUM_ALPHABET_SYMBOLS',
     desc: 'common password',
   },
   spwd: {
     type: String,
     pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-    desc: 'strong password at least 8 chars with upper case and lower case and number and symbols',
+    desc: 'at least 8 chars with upper case and lower case and number and symbols',
   },
   integer: {
     type: String,
