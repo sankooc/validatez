@@ -3,12 +3,13 @@ const _types = require('./types');
 
 const DEFAUT_META = {
   errorType: Error,
+  handle: 'error',
   field: 'strict', // camel, snake, kebab
 };
 
 const DEFAULT_SCHEMA = {
   type: String,
-  allowNil: false,
+  required: true,
   errMessage: 'PARAM_ERROR',
 };
 
@@ -101,11 +102,14 @@ exports.create = function _create(schema, _option) {
     const _sc = s.sc;
     const k = s.field;
     const scm = _.extend({}, DEFAULT_SCHEMA, _sc);
-    const { type, errMessage, allowNil, pattern, range } = scm;
+    const { type, errMessage, allowNil, required, pattern, range } = scm;
+    if(){}
+    const _allowNil = !required || !!allowNil;
     const occurErr = function _oc(errtype, val) {
       const msg = _.isFunction(errMessage) ? errMessage(errtype, val) : errMessage;
       throw new Error(msg);
     };
+
     const _vali = (_type, val) => {
       switch (_type) {
         case String:
@@ -151,14 +155,13 @@ exports.create = function _create(schema, _option) {
     };
     const func = (val) => {
       if (_.isNil(val)) {
-        if (!allowNil) {
+        if (!_allowNil) {
           occurErr('nil', val);
         }
       } else {
         switch (type) {
           case Array:
             if (_.isArray(val)) {
-              // range
             } else {
               occurErr('type error', val);
             }
@@ -187,7 +190,8 @@ exports.create = function _create(schema, _option) {
       });
     }
   };
-  if(option.errorType === Function){
+  const eType = option.errorType || option.handle;
+  if(eType === 'function' || eType === 'callback' || eType === Function){
     return function(data,callback){
       let msg;
       try{
@@ -198,7 +202,7 @@ exports.create = function _create(schema, _option) {
       callback(msg, data);
     }
   }
-  if(option.errorType === Promise){
+  if(eType === 'promise' || eType === Promise){
     return function(data){
       return new Promise((resolve, reject) => {
         try{

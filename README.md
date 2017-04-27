@@ -232,7 +232,7 @@ validator(data); // pass
 | key       | type          |default value| desc                         |   
 |-----------|---------------|-------------|------------------------------|
 | type      |string/function|String       |                              |
-| allowNil  |boolean        |false        |                              |
+| required  |boolean        |false        |                              |
 | errMessage|string/function|`error param`| error message                |
 | range     |array          |             | enable when type is `Number` |
 | pattern   |regex          |             | enable when type is `String` |
@@ -243,5 +243,5 @@ validator(data); // pass
 
 | key     |type    |default value | desc             |
 |---------|--------|--------|------------------------|
-|errorType|function| Error  | Error/Promise/Function |
+| handle  |function| Error  | 'error'/'promise'/'callback' |
 |field    |string  |`strict`| snake/camel/kebab      |
