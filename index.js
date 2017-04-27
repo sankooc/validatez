@@ -103,7 +103,6 @@ exports.create = function _create(schema, _option) {
     const k = s.field;
     const scm = _.extend({}, DEFAULT_SCHEMA, _sc);
     const { type, errMessage, allowNil, required, pattern, range } = scm;
-    if(){}
     const _allowNil = !required || !!allowNil;
     const occurErr = function _oc(errtype, val) {
       const msg = _.isFunction(errMessage) ? errMessage(errtype, val) : errMessage;
