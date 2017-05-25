@@ -10,7 +10,7 @@ const DEFAUT_META = {
 const DEFAULT_SCHEMA = {
   type: String,
   required: true,
-  errMessage: 'PARAM_ERROR',
+  errMessage: 'PARAM_ERROR_[<%= errtype %>]_FIELD_[<%= field %>]_VALUE_[<%= val %>]',
 };
 
 const wrapKey = function wrapKey(type, key) {
@@ -56,43 +56,52 @@ const _tp = function(arr){
   return _arr;
 }
 
+const _isSam = (type) => {
+  return typeof type === 'function' || _.isArray(type);
+}
+
+const _isSim = (type) => {
+  return typeof type === 'string' && type.charAt(0) === '@'
+}
+
+const _isRef = (type) => {
+  return typeof type === 'string' && type.charAt(0) === '&';
+}
+
+const normal = (field, schema) => {
+  const type = schema.type;
+  let sc = schema;
+  const __ref = _isRef(type);
+  if(_isSim(type)){
+    const f = type.substring(1);
+    const _type = _types[f];
+    if(!_type){
+      throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
+    }
+    sc = _.extend({}, _type ,_.omit(schema, 'type'));
+  }
+  return {field, sc, __ref}
+}
+
 const _toArray = function(schema){
   const keys = Object.keys(schema);
-  const arr = keys.map((field) => {
+  const parse = (field) => {
     let _schema = schema[field];
-    if (typeof _schema === 'object') {
-      const type = _schema.type;
-      const __ref = (typeof type === 'string' && type.charAt(0) === '&');
-      if(typeof type === 'string' && type.charAt(0) === '@'){
-        const f = type.substring(1);
-        const _type = _types[f];
-        if(!_type){
-          throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
-        }
-        _schema = _.extend({}, _type ,_.omit(schema[field],'type'));
-      }
-      return {field, sc: _schema, __ref}
-    } else if (typeof _schema === 'function') {
+    if (_isSam(_schema) || _isSim(_schema) || _isRef(_schema) ) {
       _schema = {
         type: _schema
       }
-      return { field, sc: _schema }
-    } else if(typeof _schema === 'string'){
-      if(_schema.charAt(0) === '@'){
-        const f = _schema.substring(1);
-        const _type = _types[f];
-        if(!_type){
-          throw new Error(`NO SUCH BUILDIN TYPE [${type}]`);
-        }
-        _schema = _.extend({}, _type);
-        return {field, sc: _schema}
-      }
+      return normal(field, _schema);
+    } else  if (typeof _schema === 'object') {
+      return normal(field, _schema);
     }
-    console.dir(_schema);
     throw new Error('SCHEMA_ERROR');
-  });
+  };
+
+  const arr = keys.map(parse);
   return _tp(arr);
 }
+
 
 exports.create = function _create(schema, _option) {
   const option = _.extend({}, DEFAUT_META, _option);
@@ -102,10 +111,18 @@ exports.create = function _create(schema, _option) {
     const _sc = s.sc;
     const k = s.field;
     const scm = _.extend({}, DEFAULT_SCHEMA, _sc);
-    const { type, errMessage, allowNil, required, pattern, range } = scm;
+    const { type, allowNil, required, pattern, range } = scm;
+    let errMessage = scm.errMessage;
+    if(!_.isFunction(errMessage)){
+      const compiled = _.template(scm.errMessage);
+      errMessage = (errtype, val) => compiled({errtype, val, field: k, schema: scm});
+    }
     const _allowNil = !required || !!allowNil;
+    if(allowNil !== undefined){
+      console.warn('[validatez]: {allowNil} is deprecated, use {required} instead');
+    }
     const occurErr = function _oc(errtype, val) {
-      const msg = _.isFunction(errMessage) ? errMessage(errtype, val) : errMessage;
+      const msg = errMessage(errtype, val, k, scm);
       throw new Error(msg);
     };
 
@@ -172,7 +189,7 @@ exports.create = function _create(schema, _option) {
                   _vali(type[0], v);
                 }
               } else {
-                occurErr('type error', val);
+                occurErr('array type error', val);
               }
             } else {
               _vali(type, val);
@@ -191,6 +208,9 @@ exports.create = function _create(schema, _option) {
   };
   const eType = option.errorType || option.handle;
   if(eType === 'function' || eType === 'callback' || eType === Function){
+    if(eType === Function){
+      console.warn('[validatez]: errorhandle {Function} is deprecated, use {`callback`} instead');
+    }
     return function(data,callback){
       let msg;
       try{
@@ -202,6 +222,9 @@ exports.create = function _create(schema, _option) {
     }
   }
   if(eType === 'promise' || eType === Promise){
+    if(eType === Promise){
+      console.warn('[validatez]: errorhandle {Promise} is deprecated, use {`promise`} instead');
+    }
     return function(data){
       return new Promise((resolve, reject) => {
         try{

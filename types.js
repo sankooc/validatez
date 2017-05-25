@@ -2,12 +2,12 @@ module.exports = {
   email: {
     type: String,
     pattern: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
-    errMessage: 'invalid email pattern',
+    errMessage: 'invalid email pattern in FIELD_[<%= field %>]_VALUE_[<%= val %>]',
   },
   url: {
     type: String,
     pattern: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-    errMessage: 'invalid URL pattern',
+    errMessage: 'invalid URL pattern in FIELD_[<%= field %>]_VALUE_[<%= val %>]',
   },
   ip: {
     type: String,
@@ -17,7 +17,7 @@ module.exports = {
   pwd:{
     type: String,
     pattern: /^[\x21-\x7e]{5,}$/,
-    errMessage: 'AT_LEAST_5_CHAR_WITH_NUM_ALPHABET_SYMBOLS',
+    errMessage: 'AT_LEAST_5_CHAR_WITH_NUM_ALPHABET_SYMBOLS in FIELD_[<%= field %>]_VALUE_[<%= val %>]',
     desc: 'common password',
   },
   spwd: {
@@ -73,5 +73,10 @@ module.exports = {
     type: String,
     pattern: /^1\d{10}$/,
     desc: 'chinese mobile phone pattern',
+  },
+  mid: {
+    type: String,
+    pattern: /^[0-9a-f]{24}$/,
+    desc: 'mongodb _id',
   },
 }

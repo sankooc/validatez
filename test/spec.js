@@ -11,10 +11,10 @@ describe('test', () => {
         ,
       },
       nickname: {
-        allowNil: true,
+        required: false,
       },
       isChecked: {
-        allowNil: true,
+        required: false,
         type: Boolean,
         errMessage: (type, val) =>
           `${type}-${val}`,
@@ -31,7 +31,7 @@ describe('test', () => {
         range: [1, 10],
         errMessage: type =>
           `${type}`,
-        allowNil: true,
+        required: false,
       },
     };
     validator = _validator.create(schema);
@@ -81,7 +81,7 @@ describe('field test', () => {
   it('case story', () => {
     const schema = {
       userName: {
-        allowNil: false,
+        required: true,
         errMessage: (type, val) =>
           `${type}-${val}`
         ,
@@ -118,7 +118,7 @@ describe('field test', () => {
     };
     validator = _validator.create({
       user_name: {
-        allowNil: false,
+        required: false,
         errMessage: (type, val) =>
           `${type}-${val}`
         ,
@@ -182,12 +182,12 @@ describe('buildin type test', () => {
     data = {
       email: 'aka@gmail.com',
     };
-    should(validator.bind(validator, data)).not.throw();
+    should(validator.bind(null, data)).not.throw();
 
     data = {
       email: 'akmail.com',
     };
-    should(validator.bind(validator, data)).throw('invalid email pattern');
+    should(validator.bind(null, data)).throw('invalid email pattern in FIELD_[email]_VALUE_[akmail.com]');
 
     _validator.register({
       code: {
@@ -204,11 +204,12 @@ describe('buildin type test', () => {
     data = {
       zcode: '1234123412341234',
     };
-    should(validator.bind(validator, data)).not.throw();
+    should(validator.bind(null, data)).not.throw();
     data = {
       zcode: '12341234123413214213214',
     };
-    should(validator.bind(validator, data)).throw('PARAM_ERROR');
+    // validator(data)
+    should(validator.bind(null, data)).throw('PARAM_ERROR_[pattern error]_FIELD_[zcode]_VALUE_[12341234123413214213214]');
   });
 });
 
@@ -219,6 +220,8 @@ describe('simple type test', () => {
       email: '@email',
       name: String,
       num: Number,
+      pets: [String],
+      age: '&num',
     };
     let validator = _validator.create(schema);
 
@@ -226,16 +229,18 @@ describe('simple type test', () => {
       email: 'ccc',
       name: 'kk',
       num: 123,
+      pets: ['tom','jerry'],
+      age: 20,
     };
-    should(validator.bind(validator, data)).throw('invalid email pattern');
+    should(validator.bind(null, data)).throw('invalid email pattern in FIELD_[email]_VALUE_[ccc]');
 
     data = {
       email: 'sankooc@163.com',
       name: 'kk',
       num: 123,
+      pets: ['tom','jerry'],
+      age: 20,
     };
-    should(validator.bind(validator, data)).not.throw();
-
-
+    should(validator.bind(null, data)).not.throw();
   });
 });

@@ -15,7 +15,7 @@ simple way to validate object
 ## base usage
 
 ```
-const validate = require('validatez');
+const creator = require('validatez');
 
 const schema = {
   name: {
@@ -28,11 +28,11 @@ const schema = {
     type: Number,
     range: [1, 100],
     errMessage: 'age incorrect',
-    allowNil: true,
+    required: false,
   },
 };
 
-const validator = validate.create(schema);
+const validator = creator.create(schema);
 
 let data = {
   name: 'atom',
@@ -243,5 +243,5 @@ validator(data); // pass
 
 | key     |type    |default value | desc             |
 |---------|--------|--------|------------------------|
-| handle  |function| Error  | 'error'/'promise'/'callback' |
+|handle   |string  |`error` | 'error'/'promise'/'callback' |
 |field    |string  |`strict`| snake/camel/kebab      |
